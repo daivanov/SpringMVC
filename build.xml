@@ -1,0 +1,98 @@
+<?xml version="1.0"?>
+
+<project name="springmvc" basedir="." default="dist">
+    <property file="build.properties"/>
+
+    <property name="src.dir" value="${basedir}/src"/>
+    <property name="tests.dir" value="${basedir}/test"/>
+    <property name="tests.logs" value="${basedir}/logs"/>
+    <property name="web.dir" value="${basedir}/web"/>
+    <property name="lib.dir" value="${web.dir}/WEB-INF/lib"/>
+    <property name="buildlib.dir" value="${basedir}/buildlib"/>
+    <property name="build.dir" value="${web.dir}/WEB-INF/classes"/>
+
+    <path id="main.classpath">
+        <fileset dir="${lib.dir}">
+            <include name="*.jar"/>
+        </fileset>
+        <fileset dir="${buildlib.dir}">
+            <include name="*.jar"/>
+        </fileset>
+        <pathelement path="${build.dir}"/>
+    </path>
+
+    <target name="dirs">
+        <mkdir dir="${build.dir}"/>
+        <mkdir dir="${tests.logs}"/>
+    </target>
+
+    <target name="compile-src" depends="dirs">
+        <javac destdir="${build.dir}" source="1.7" target="1.7" debug="true"
+               deprecation="false" optimize="false" failonerror="true"
+               includeantruntime="false">
+            <src path="${src.dir}"/>
+            <classpath refid="main.classpath"/>
+        </javac>
+    </target>
+
+    <target name="jar-src" depends="compile-src">
+        <jar destfile="${lib.dir}/spring-mvc-example.jar">
+            <fileset dir="${build.dir}">
+                <include name="**/*"/>
+                <exclude name="**/*.xml"/>
+                <exclude name="**/*.properties"/>
+            </fileset>
+        </jar>
+    </target>
+
+    <target name="clean-src">
+        <delete includeemptydirs="true">
+            <fileset dir="${build.dir}" casesensitive="yes">
+                <include name="**/*"/>
+                <exclude name="**/*.xml"/>
+                <exclude name="**/*.properties"/>
+            </fileset>
+        </delete>
+    </target>
+
+    <target name="compile-tests" depends="dirs">
+        <javac destdir="${build.dir}" source="1.7" target="1.7" debug="true"
+               deprecation="false" optimize="false" failonerror="true"
+               includeantruntime="false">
+            <src path="${tests.dir}"/>
+            <classpath refid="main.classpath"/>
+        </javac>
+    </target>
+    
+    <target name="tests" depends="compile-tests">
+        <junit fork="yes" haltonfailure="false" haltonerror="false" showoutput="true"
+	       failureproperty="tests.failed" printsummary="yes">
+            <classpath refid="main.classpath"/>
+            <batchtest todir="${tests.logs}">
+                <formatter type="xml" />
+                <fileset dir="${tests.dir}">
+                    <include name="**/*Test.java"/>
+                </fileset>
+            </batchtest>
+        </junit>
+
+        <fail if="tests.failed"/>
+    </target>
+
+    <target name="deploy" depends="jar-src,tests,clean-src">
+        <copy todir="${appserver.home}/webapps/${deployment.name}/">
+            <fileset dir="${web.dir}" casesensitive="yes">
+                <include name="**/*.xml"/>
+                <include name="**/*.properties"/>
+            </fileset>
+        </copy>
+        <copy todir="${appserver.home}/webapps/${deployment.name}/WEB-INF/lib/">
+            <fileset dir="${lib.dir}" casesensitive="yes">
+                <include name="**/*.jar"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="dist" depends="jar-src,tests,clean-src,deploy">
+    </target>
+</project>

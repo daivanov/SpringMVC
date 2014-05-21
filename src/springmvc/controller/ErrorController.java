@@ -17,7 +17,7 @@ import springmvc.model.Response;
 public class ErrorController {
 	private static final Logger logger = LoggerFactory.getLogger(ErrorController.class);
 
-	@RequestMapping(value="/missing", consumes="application/json", produces="application/json")
+	@RequestMapping(value="/missing", produces="application/json")
 	public ResponseEntity<Response> missing(HttpServletResponse resp) {
 		logger.info("missing");
 		Response response = new Response("missing");

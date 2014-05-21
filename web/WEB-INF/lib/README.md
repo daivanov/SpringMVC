@@ -1,7 +1,7 @@
 Dependencies:
 =============
-commons-discovery.jar
-commons-logging-1.0.4.jar
+commons-discovery-0.5.jar
+commons-logging-1.1.3.jar
 jackson-core-asl-1.9.13.jar
 jackson-mapper-asl-1.9.13.jar
 logback-classic-1.0.12.jar

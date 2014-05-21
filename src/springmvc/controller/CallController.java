@@ -23,6 +23,7 @@ public class CallController {
 	@RequestMapping(value="/call", method={RequestMethod.GET},
 		produces="application/json")
 	public ResponseEntity<Response> get(HttpServletRequest req) {
+
 		logger.info("call-get");
 		Response response = new Response("call-get");
 		return new ResponseEntity<Response>(
@@ -32,9 +33,18 @@ public class CallController {
 	@RequestMapping(value="/call", method={RequestMethod.POST},
 		consumes="application/json", produces="application/json")
 	public ResponseEntity<Response> post(@RequestBody Request req) {
+
 		logger.info("call-post {}", req.getInput());
 		Response response = new Response(req.getInput());
 		return new ResponseEntity<Response>(
 			response, new HttpHeaders(), HttpStatus.OK);
+	}
+
+	@RequestMapping(value="/call", method={RequestMethod.DELETE},
+		produces="application/json")
+	public ResponseEntity<Response> delete(HttpServletRequest req) {
+
+		logger.info("call-delete");
+		throw new IllegalStateException("Not implemented");
 	}
 }
